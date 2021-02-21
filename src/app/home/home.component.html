@@ -1,0 +1,61 @@
+<mat-drawer-container>
+  <mat-drawer mode="side" opened="true">
+  	<div class="form-wrapper">
+	  	<form [formGroup]="form" class="filter-form">
+			<mat-form-field appearance="fill">
+				<mat-label>Location</mat-label>
+				<mat-select formControlName="location">
+				    <mat-option *ngFor="let location of locations" [value]="location.value">
+				      {{location.viewValue}}
+				    </mat-option>
+			  	</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="fill">
+				<mat-label>Metrix</mat-label>
+				<mat-select formControlName="metrics">
+					<mat-option *ngFor="let metric of metrics" [value]="metric.value">
+						{{metric.viewValue}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field appearance="fill">
+				<mat-label>Enter a date range</mat-label>
+				<mat-date-range-input [rangePicker]="picker">
+					<input matStartDate formControlName="start" placeholder="Start date">
+					<input matEndDate formControlName="end" placeholder="End date">
+				</mat-date-range-input>
+				<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+				<mat-date-range-picker #picker></mat-date-range-picker>
+
+				<mat-error *ngIf="form.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+				<mat-error *ngIf="form.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="fill">
+				<mat-label>Chart Type</mat-label>
+				<mat-select formControlName="charttype">
+					<mat-option value="line">Line Chart</mat-option>
+					<mat-option value="bar">Bar Chart</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<button (click)="loadData()" mat-raised-button color="primary">Update Chart</button>
+		</form>
+	</div>
+  </mat-drawer>
+  <mat-drawer-content>
+  	<mat-card *ngIf="barChartLabels.length">
+  		<mat-card-content>
+  			<canvas baseChart 
+				[datasets]="barChartData"
+				[labels]="barChartLabels"
+				[options]="barChartOptions"
+				[plugins]="barChartPlugins"
+				[legend]="barChartLegend"
+				[chartType]="form.controls.charttype.value">		
+			</canvas>
+  		</mat-card-content>
+  	</mat-card>
+  </mat-drawer-content>
+</mat-drawer-container>
